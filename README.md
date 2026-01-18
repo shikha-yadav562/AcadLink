@@ -40,7 +40,7 @@ AcadLink is an academic management and assessment platform designed to streamlin
 
 ## 🧠 Smart Technologies Used
 
-* AI/ML for plagiarism and handwriting similarity detection
+* AI for plagiarism and handwriting similarity detection
 * OCR for handwritten assignment processing
 * NLP for AI-generated content detection
 * Secure cloud-based file handling
@@ -52,17 +52,16 @@ AcadLink is an academic management and assessment platform designed to streamlin
 ### Frontend
 
 * HTML, CSS, JavaScript
-* React.js (optional)
-* Tailwind / Bootstrap
+* Tailwind
 
 ### Backend
 
-* Node.js / Django / Flask
-* REST APIs
+*  Flask
+* Gemini APIs
 
 ### Database
 
-* MongoDB / MySQL / PostgreSQL
+* MySQL 
 
 ### AI & Tools
 
@@ -72,19 +71,6 @@ AcadLink is an academic management and assessment platform designed to streamlin
 
 ---
 
-## 📂 Project Structure (Sample)
-
-```
-AcadLink/
-│── frontend/
-│── backend/
-│── ai-engine/
-│── database/
-│── docs/
-│── README.md
-```
-
----
 
 ## 🔐 Security & Privacy
 
@@ -112,24 +98,6 @@ AcadLink/
 * Real-time collaboration
 * Automated grading system
 
----
-
-## 🤝 Contribution
-
-Contributions are welcome!
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit changes
-4. Open a Pull Request
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
-
----
 
 ## 👤 Author
 
