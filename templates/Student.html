@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcadLink Student Dashboard</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Custom scrollbar for main content */
+        .main-content-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-content-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .main-content-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .main-content-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Active sidebar item styling */
+        .active-sidebar-item {
+            background-color: #4f46e5;
+            /* Tailwind's indigo-600 */
+            color: #ffffff;
+            /* White text */
+        }
+
+        /* Responsive sidebar for mobile */
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        #sidebar.closed {
+            transform: translateX(-100%);
+        }
+
+        /* Overlay for mobile sidebar */
+        #sidebar-overlay {
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 30;
+        }
+
+        /* Content section display */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-gray-100 min-h-screen flex">
+
+    <!-- Sidebar Overlay for mobile -->
+    <div id="sidebar-overlay" class="fixed inset-0 hidden lg:hidden"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar"
+        class="w-64 bg-white shadow-lg flex flex-col justify-between fixed inset-y-0 left-0 z-40 transform -translate-x-full lg:translate-x-0 lg:static lg:block">
+        <div>
+            <!-- Logo and Title -->
+            <div class="flex items-center mb-4 px-3 py-1 mt-4">
+                <div
+                    class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-purple-600 text-white rounded-md flex items-center justify-center text-3xl font-bold">
+                    🎓</div>
+                <div class="ml-2">
+                    <h1 class="font-extrabold text-indigo-700 text-3xl">AcadLink</h1>
+                    <p class="text-sm text-gray-500 -mt-1">Smart Academic Manager</p>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="mt-6">
+                <ul>
+                    <li class="mb-2">
+                        <a href="#"
+                            class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200 active-sidebar-item"
+                            data-section="dashboard">
+                            <i class="fas fa-th-large mr-4 text-lg"></i>
+                            Dashboard
+                        </a>
+                    </li>
+  <li class="mb-2">
+  <a href="#" data-section="assignments" class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200">
+    <i class="fas fa-tasks mr-4 text-lg"></i>
+    AI Assignments
+  </a>
+</li>
+
+
+
+                    </li>
+                    <li class="mb-2">
+                        <a href="#"
+                            class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200"
+                            data-section="attendance">
+                            <i class="fas fa-calendar-check mr-4 text-lg"></i>
+                            Attendance
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                      <a href="#" class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200" data-section="student-timetable">
+                            <i class="fas fa-calendar-alt mr-4"></i> Timetable
+                        </a>
+                    </li>
+
+
+                    <li class="mb-2">
+                        <a href="#"
+                            class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200"
+                            data-section="notes-syllabus-section">
+                            <i class="fas fa-book mr-4 text-lg"></i>
+                            Notes & Syllabus
+                        </a>
+                    </li>
+
+   <!-- ---------- Sidebar Button ---------- -->
+<li class="mb-2">
+  <a href="#"
+     class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition"
+     data-section="announcements-section">
+     <i class="fas fa-bullhorn mr-4 text-lg"></i> Announcements
+  </a>
+</li>
+<script>
+document.querySelectorAll(".sidebar-item").forEach(item => {
+  item.addEventListener("click", (e) => {
+    e.preventDefault(); // prevents page reload
+    const sectionId = item.getAttribute("data-section");
+
+    document.querySelectorAll(".content-section").forEach(sec => {
+      sec.classList.add("hidden");
+    });
+
+    const target = document.getElementById(sectionId);
+    if (target) {
+      target.classList.remove("hidden");
+      console.log("✅ Showing section:", sectionId);
+    } else {
+      console.error("❌ Section not found:", sectionId);
+    }
+  });
+});
+</script>
+
+                    <li class="mb-2">
+                        <a href="#"
+                            class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200"
+                            data-section="profile">
+                            <i class="fas fa-user mr-4 text-lg"></i>
+                            Profile
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Student Profile in Sidebar (Bottom) -->
+        <div class="px-6 pb-4 border-t border-gray-200 pt-4">
+
+            <div class="font-semibold text-gray-800">{{ student[0] }}</div>
+            <div class="text-sm text-gray-500">{{ student[2] }} - Sem {{ student[3] }}</div>
+            <div class="text-xs text-gray-400">Roll No: {{ student[1] }}</div>
+        </div>
+        </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 ml-0 lg:max-w-7xl p-4 sm:p-6 md:p-8 overflow-y-auto main-content-scroll">
+        <!-- Top Header -->
+        <header class="bg-white rounded-lg shadow-sm py-4 px-4 sm:px-6 flex justify-between items-center mb-8">
+            <button id="hamburger-btn" class="text-gray-600 hover:text-gray-900 lg:hidden focus:outline-none">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-800 ml-4 lg:ml-0">Welcome, {{ student[0] }}!</h1>
+            <div class="flex items-center space-x-2 sm:space-x-4">
+
+
+                <!-- Notification Button -->
+                <div class="relative">
+                    <button id="notif-btn" class="text-gray-600 hover:text-gray-900 relative focus:outline-none">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span id="notification-count"
+                            class="absolute -top-1 -right-1 hidden px-2 py-1 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">
+                            0
+                        </span>
+                    </button>
+
+                    <!-- Dropdown Panel -->
+                    <div id="notifications-panel"
+                        class="hidden absolute right-0 mt-2 w-80 bg-white border rounded-lg shadow-lg z-50">
+                        <div class="p-3 border-b font-semibold text-gray-700">Notifications
+                            <button id="clear-all-btn" class="text-xs text-red-500 hover:text-red-700">Clear
+                                All</button>
+                        </div>
+
+                        <div id="notifications-list" class="max-h-64 overflow-y-auto">
+                            <!-- Notifications will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+                <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                        const notifBtn = document.getElementById("notif-btn");
+                        const notifPanel = document.getElementById("notifications-panel");
+                        const notifCount = document.getElementById("notification-count");
+                        const notifList = document.getElementById("notifications-list");
+
+                        // 🔹 Toggle dropdown
+                        notifBtn.addEventListener("click", () => {
+                            notifPanel.classList.toggle("hidden");
+                        });
+
+                        // 🔹 Fetch notifications
+                        async function loadNotifications() {
+                            try {
+                                const res = await fetch("/api/notifications");
+                                const data = await res.json();
+                                notifList.innerHTML = "";
+
+                                if (data.length === 0) {
+                                    notifList.innerHTML = `<p class="p-3 text-gray-500 italic">No notifications</p>`;
+                                    notifCount.classList.add("hidden");
+                                    return;
+                                }
+
+                                notifCount.textContent = data.filter(n => !n.is_read).length;
+                                notifCount.classList.toggle("hidden", notifCount.textContent === "0");
+
+                                data.forEach(n => {
+                                    const div = document.createElement("div");
+                                    div.className = "p-3 border-b hover:bg-gray-50";
+                                    div.innerHTML = `
+                    <p class="text-sm text-gray-800">${n.message}</p>
+                    <p class="text-xs text-gray-500">${n.time}</p>
+                `;
+                                    notifList.appendChild(div);
+                                });
+                            } catch (err) {
+                                console.error("Error loading notifications:", err);
+                            }
+                        }
+
+                        // 🔹 Auto-refresh every 30s
+                        loadNotifications();
+                        setInterval(loadNotifications, 30000);
+                    });
+                    const clearAllBtn = document.getElementById("clear-all-btn");
+
+                    clearAllBtn.addEventListener("click", async () => {
+                        if (!confirm("Are you sure you want to clear all notifications?")) return;
+
+                        try {
+                            const res = await fetch("/api/notifications/clear_all", { method: "DELETE" });
+                            const result = await res.json();
+                            if (result.status === "success") {
+                                await loadNotifications();  // 👈 reload list + badge from server
+                            }
+                            else {
+                                alert("Error: " + result.message);
+                            }
+                        } catch (err) {
+                            console.error("Error clearing notifications:", err);
+                        }
+                    });
+
+                </script>
+
+
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="content-section active">
+            <h2 class="text-xl font-semibold text-gray-700 mb-6">Your Academic Snapshot</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+                <!-- Total Assignments Card -->
+                <div
+                    class="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-lg p-6 shadow-md text-white flex items-center justify-between">
+                    <div>
+                        <div id="total-assignments" class="text-3xl font-bold">--</div>
+                        <div class="text-sm opacity-90">Total Assignments</div>
+                    </div>
+                    <i class="fas fa-tasks text-4xl opacity-70"></i>
+                </div>
+                <!-- Attendance % Card -->
+                <div class="bg-white rounded-lg p-6 shadow-md text-gray-700 flex items-center justify-between">
+                    <div>
+                        <div id="avg-attendance" class="text-3xl font-bold">--%</div>
+                        <div class="text-sm text-gray-500">Overall Attendance</div>
+                    </div>
+                    <i class="fas fa-calendar-check text-4xl text-gray-400"></i>
+                </div>
+                <!-- Upcoming Exams Card -->
+                <div class="bg-white rounded-lg p-6 shadow-md text-gray-700 flex items-center justify-between">
+                    <div>
+                        <div id="upcoming-exams" class="text-3xl font-bold">--</div>
+                        <div class="text-sm text-gray-500">Upcoming Exams</div>
+                    </div>
+                    <i class="fas fa-file-invoice text-4xl text-gray-400"></i>
+                </div>
+                <!-- Pending Submissions Card -->
+                <div class="bg-white rounded-lg p-6 shadow-md text-gray-700 flex items-center justify-between">
+                    <div>
+                        <div id="pending-submissions" class="text-3xl font-bold">--</div>
+                        <div class="text-sm text-gray-500">Pending Submissions</div>
+                    </div>
+                    <i class="fas fa-exclamation-triangle text-4xl text-gray-400"></i>
+                </div>
+            </div>
+
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Quick Links</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mb-8">
+                <div class="bg-white rounded-lg p-6 shadow-md flex flex-col items-center justify-center text-center">
+                    <div class="p-4 bg-blue-100 rounded-full mb-4">
+                        <i class="fas fa-cloud-upload-alt text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Submit Assignment</h3>
+                    <p class="text-sm text-gray-500 mb-4">Upload your completed tasks</p>
+                    <button
+                        class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                        onclick="document.querySelector('.sidebar-item[data-section=\'assignments\']').click();">Go to
+                        Assignments</button>
+                </div>
+                <div class="bg-white rounded-lg p-6 shadow-md flex flex-col items-center justify-center text-center">
+                    <div class="p-4 bg-purple-100 rounded-full mb-4">
+                        <i class="fas fa-calendar-week text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">View Timetable</h3>
+                    <p class="text-sm text-gray-500 mb-4">Check your daily and weekly schedule</p>
+                    <button
+                        class="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 transition-colors duration-200"
+                        onclick="document.querySelector('.sidebar-item[data-section=\'timetable\']').click();">View
+                        Schedule</button>
+                </div>
+                <div class="bg-white rounded-lg p-6 shadow-md flex flex-col items-center justify-center text-center">
+                    <div class="p-4 bg-green-100 rounded-full mb-4">
+                        <i class="fas fa-chart-pie text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Check Attendance</h3>
+                    <p class="text-sm text-gray-500 mb-4">Monitor your attendance records</p>
+                    <button
+                        class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors duration-200"
+                        onclick="document.querySelector('.sidebar-item[data-section=\'attendance\']').click();">View
+                        Attendance</button>
+                </div>
+            </div>
+
+
+                </div>
+            </div>
+        </section>
+<!-- ---------- Attendance Section ---------- -->
+<div id="attendance-section" class="content-section hidden">
+  <div class="mt-8 bg-white shadow-lg rounded-2xl p-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-6">
+      <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+        📊 My Attendance
+      </h2>
+      <div class="flex space-x-2">
+        <button id="tab-weekly"
+          class="px-4 py-1 rounded-lg bg-indigo-600 text-white text-sm font-medium">Weekly</button>
+        <button id="tab-monthly"
+          class="px-4 py-1 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium">Monthly</button>
+      </div>
+    </div>
+
+    <!-- Attendance Table -->
+    <div class="overflow-x-auto rounded-lg border border-gray-200">
+      <table class="min-w-full text-sm">
+        <thead class="bg-indigo-600 text-white">
+          <tr>
+            <th class="py-2 px-4 text-left">Roll No</th>
+            <th class="py-2 px-4 text-left">Name</th>
+            <th class="py-2 px-4 text-left">Subject</th>
+            <th class="py-2 px-4 text-left">Attended</th>
+            <th class="py-2 px-4 text-left">Total Lectures</th>
+            <th class="py-2 px-4 text-left">Percentage</th>
+            <th class="py-2 px-4 text-left">Dates (Day, Status)</th>
+          </tr>
+        </thead>
+        <tbody id="attendance-table-body" class="divide-y divide-gray-200 bg-white"></tbody>
+      </table>
+    </div>
+
+    <div class="mt-4 text-sm text-gray-600 font-medium" id="attendance-summary"></div>
+  </div>
+</div>
+
+<script>
+let currentView = "weekly";
+const loggedInRollNo = "{{ student[1] }}";
+const loggedInName = "{{ student[0] }}";
+
+async function loadStudentAttendance(rollNo) {
+  if (!rollNo) return console.error("⚠️ No roll number found.");
+
+  try {
+    const res = await fetch(`/api/student_attendance/${rollNo}?view=${currentView}`);
+    const data = await res.json();
+    const tableBody = document.getElementById("attendance-table-body");
+    const summary = document.getElementById("attendance-summary");
+    tableBody.innerHTML = "";
+
+    if (!data.length) {
+      tableBody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-gray-500 italic">No attendance records</td></tr>`;
+      summary.textContent = "";
+      return;
+    }
+
+    let totalAttended = 0, totalClasses = 0;
+    data.forEach(row => {
+      totalAttended += row.attended;
+      totalClasses += row.total;
+
+      const pctClass = row.percentage >= 75 ? "bg-green-100 text-green-700"
+        : row.percentage >= 50 ? "bg-yellow-100 text-yellow-700"
+        : "bg-red-100 text-red-700";
+
+      // Example format for dates (mocked for now)
+      const formattedDates = row.dates ? row.dates.join(", ") : "-";
+
+      tableBody.innerHTML += `
+      <tr class="hover:bg-gray-50">
+        <td class="py-3 px-4">${rollNo}</td>
+        <td class="py-3 px-4">${loggedInName}</td>
+        <td class="py-3 px-4 font-medium">${row.subject}</td>
+        <td class="py-3 px-4">${row.attended}</td>
+        <td class="py-3 px-4">${row.total}</td>
+        <td class="py-3 px-4">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold ${pctClass}">${row.percentage}%</span>
+        </td>
+        <td class="py-3 px-4">${formattedDates}</td>
+      </tr>`;
+    });
+
+    const overallPct = totalClasses ? Math.round((totalAttended / totalClasses) * 100) : 0;
+    summary.textContent = `Overall (${currentView}): ${overallPct}% (${totalAttended}/${totalClasses})`;
+
+  } catch (err) {
+    console.error("Failed to load attendance:", err);
+  }
+}
+
+// Auto-load attendance
+if (loggedInRollNo) {
+  loadStudentAttendance(loggedInRollNo);
+  setInterval(() => loadStudentAttendance(loggedInRollNo), 15000);
+}
+
+// Tab switching
+document.getElementById("tab-weekly").addEventListener("click", () => {
+  currentView = "weekly";
+  document.getElementById("tab-weekly").className = "px-4 py-1 rounded-lg bg-indigo-600 text-white text-sm font-medium";
+  document.getElementById("tab-monthly").className = "px-4 py-1 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium";
+  loadStudentAttendance(loggedInRollNo);
+});
+
+document.getElementById("tab-monthly").addEventListener("click", () => {
+  currentView = "monthly";
+  document.getElementById("tab-monthly").className = "px-4 py-1 rounded-lg bg-indigo-600 text-white text-sm font-medium";
+  document.getElementById("tab-weekly").className = "px-4 py-1 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium";
+  loadStudentAttendance(loggedInRollNo);
+});
+</script>
+
+
+
+
+<section id="assignments-section" class="content-section hidden">
+  {% include 'student_assignment_submit.html' %}
+</section>
+       </div>
+
+<!-- 📅 Timetable Section -->
+<section id="student-timetable-section" class="content-section hidden">
+  <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+      <i class="fas fa-calendar-alt mr-2 text-indigo-600"></i> My Timetable
+    </h3>
+
+    <div class="flex justify-end mb-4">
+      <button id="toggleViewBtn"
+        class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-semibold transition">
+        Show Whole Week
+      </button>
+    </div>
+
+    <div id="timetable-container" class="overflow-x-auto"></div>
+    <p id="status" class="text-gray-500 text-center mt-3"></p>
+  </div>
+</section>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.getElementById("timetable-container");
+  const toggleBtn = document.getElementById("toggleViewBtn");
+  const status = document.getElementById("status");
+  const className = "{{ student[4] if student else 'IT-A' }}";
+ // dynamically load student's class if available
+  let timetable = {};
+  let showWeek = false;
+
+  // 🔹 Load timetable from Flask backend
+  async function loadTimetable() {
+    status.textContent = "Loading timetable...";
+    try {
+      const res = await fetch(`/get_timetable?class_name=${className}`);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      timetable = data.timetable || {};
+      console.log("✅ Timetable received:", timetable);
+      if (Object.keys(timetable).length === 0) {
+        status.textContent = "No timetable found for this class.";
+        container.innerHTML = "";
+      } else {
+        status.textContent = "";
+        renderTable(showWeek);
+      }
+    } catch (err) {
+      console.error("❌ Fetch error:", err);
+      status.textContent = "Error loading timetable.";
+    }
+  }
+
+  function getTodayName() {
+    const days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    return days[new Date().getDay()] || "Monday";
+  }
+
+  function renderTable(showFullWeek = false) {
+    const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+    const selectedDays = showFullWeek ? days : [getTodayName()];
+
+    let html = `
+      <table class="min-w-full border border-gray-300 text-center">
+        <thead class="bg-indigo-100">
+          <tr>
+            <th class="border px-4 py-2">Day</th>
+            <th class="border px-4 py-2">Time</th>
+            <th class="border px-4 py-2">Subject</th>
+            <th class="border px-4 py-2">Teacher</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    selectedDays.forEach(day => {
+      const lectures = timetable[day] || [];
+      if (lectures.length === 0) {
+        html += `<tr><td class="border px-2 py-1 font-semibold">${day}</td>
+                 <td colspan="3" class="border px-2 py-1 italic text-gray-400">No lectures</td></tr>`;
+      } else {
+        lectures.forEach((lec, i) => {
+          html += `<tr>
+            ${i === 0 ? `<td rowspan="${lectures.length}" class="border px-2 py-1 font-semibold align-top">${day}</td>` : ""}
+            <td class="border px-2 py-1">${lec.start} - ${lec.end}</td>
+            <td class="border px-2 py-1">${lec.subject}</td>
+            <td class="border px-2 py-1">${lec.teacher}</td>
+          </tr>`;
+        });
+      }
+    });
+
+    html += `</tbody></table>`;
+    container.innerHTML = html;
+  }
+
+  toggleBtn.addEventListener("click", () => {
+    showWeek = !showWeek;
+    toggleBtn.textContent = showWeek ? "Show Today Only" : "Show Whole Week";
+    renderTable(showWeek);
+  });
+
+  // 🚀 Initial Load
+  loadTimetable();
+});
+</script>
+<div id="notes-syllabus-section" class="content-section hidden">
+    <h2>📘 Class Syllabus</h2>
+    <iframe src="{{ url_for('student_syllabus') }}"></iframe>
+</div>
+  <iframe src="{{ url_for('student_syllabus') }}"
+         
+          style="width: 100%; height: 600px; border: none; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);"
+          title="Class Syllabus"></iframe>
+</div>
+
+
+<!-- ---------- Announcements Section ---------- -->
+<div id="announcements-section" class="content-section hidden">
+  <div class="bg-white shadow-lg rounded-2xl p-6 mt-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">📢 Announcements</h2>
+    <div id="announcement-list" class="space-y-4"></div>
+  </div>
+</div>
+
+<script>
+async function loadAnnouncements() {
+  try {
+    const res = await fetch(`${window.location.origin}/api/announcements`);
+    const data = await res.json();
+    const container = document.getElementById("announcement-list");
+    container.innerHTML = "";
+
+    // 🧩 Debugging: log what came from backend
+    console.log("📢 Announcements Data:", data);
+
+    if (!data || !data.length) {
+      container.innerHTML = `<p class="text-gray-500 italic">No announcements yet.</p>`;
+      return;
+    }
+
+    data.forEach(a => {
+      const dateText = a.created_at ? new Date(a.created_at).toLocaleString() : "Unknown Date";
+      container.innerHTML += `
+        <div class="p-4 border rounded-xl shadow-sm hover:bg-gray-50 transition">
+          <h3 class="font-semibold text-gray-800 text-lg">${a.title}</h3>
+          <p class="text-gray-600 mt-1">${a.message}</p>
+          <div class="text-xs text-gray-400 mt-2 flex justify-between">
+            <span>By ${a.faculty_name}</span>
+            <span>${dateText}</span>
+          </div>
+        </div>`;
+    });
+  } catch (err) {
+    console.error("❌ Error loading announcements:", err);
+  }
+}
+
+// load on page open
+document.addEventListener("DOMContentLoaded", loadAnnouncements);
+</script>
+
+
+        <!-- Profile Section -->
+        <section id="profile-section" class="content-section">
+            <h2 class="text-xl font-semibold text-gray-700 mb-6">My Profile</h2>
+            <div
+                class="bg-white rounded-lg shadow-md p-6 flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
+                <div class="flex-shrink-0">
+                    <img src="https://placehold.co/128x128/4F46E5/FFFFFF?text={{ student[0]|slice(0,1) }}"
+                        alt="Student Avatar" class="rounded-full w-32 h-32 object-cover border-4 border-indigo-200">
+                </div>
+                <div class="flex-grow text-center md:text-left">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">{{ student[0] }}</h3>
+                    <div class="text-gray-700 text-lg mb-4">Roll No: <span class="font-semibold">{{ student[1] }}</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-gray-600">
+                        <div><strong class="text-gray-800">Branch:</strong> {{ student[2] }}</div>
+                        <div><strong class="text-gray-800">Semester:</strong> {{ student[3] }}</div>
+                        <div><strong class="text-gray-800">Class:</strong> {{ student[4] }}</div>
+                        <div><strong class="text-gray-800">Email:</strong> {{ student[5] }}</div>
+                    </div>
+                    <!-- Add more profile details if needed -->
+                   
+                </div>
+            </div>
+        </section>
+    </main>
+<script>
+document.querySelectorAll(".sidebar-item").forEach(item => {
+  item.addEventListener("click", e => {
+    e.preventDefault();
+    const sectionId = item.getAttribute("data-section");
+
+    // hide all
+    document.querySelectorAll(".content-section").forEach(sec => sec.classList.add("hidden"));
+
+    // show clicked
+    const active = document.getElementById(sectionId);
+    if (active) {
+      active.classList.remove("hidden");
+      console.log("✅ Showing section:", sectionId);
+    } else {
+      console.error("❌ Section not found:", sectionId);
+    }
+
+    // optional: reload announcements when section opens
+    if (sectionId === "announcements-section") loadAnnouncements();
+  });
+});
+</script>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            const notificationCount = document.getElementById('notification-count');
+
+            // Jinja placeholders for dynamic data
+            // These would be populated by your Flask backend
+            const studentData = {
+                name: "{{ student[0] }}",
+                rollNo: "{{ student[1] }}",
+                branch: "{{ student[2] }}",
+                semester: "{{ student[3] }}",
+                class: "{{ student[4] }}",
+                email: "{{ student[5] }}"
+            };
+
+
+
+
+
+            const mockAnnouncements = [
+                { date: '2025-02-25', category: 'General', title: 'Library Hours Extended for Exams' },
+                { date: '2025-02-20', category: 'Assignment', title: 'Assignment 3 Submission Deadline Extended' },
+                { date: '2025-02-18', category: 'Class', title: 'Extra Class for Data Structures on March 5th' },
+            ];
+
+            let notificationCountValue = mockAnnouncements.length; // Initial notifications
+            notificationCount.textContent = notificationCountValue;
+
+            // --- Sidebar and Section Switching Logic ---
+            function toggleSidebar() {
+                sidebar.classList.toggle('-translate-x-full');
+                sidebarOverlay.classList.toggle('hidden');
+            }
+
+            hamburgerBtn.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // Remove active state from all items
+                    sidebarItems.forEach(i => {
+                        i.classList.remove('active-sidebar-item');
+                        i.classList.add('text-gray-700', 'hover:bg-indigo-50', 'hover:text-indigo-700');
+                    });
+
+                    // Add active state to clicked item
+                    this.classList.add('active-sidebar-item');
+                    this.classList.remove('text-gray-700', 'hover:bg-indigo-50', 'hover:text-indigo-700');
+
+                    // Hide all content sections
+                    contentSections.forEach(section => {
+                        section.classList.remove('active');
+                    });
+
+                    // Show the corresponding content section
+                    const targetSectionId = this.dataset.section + '-section';
+                    const targetSection = document.getElementById(targetSectionId);
+                    if (targetSection) {
+                        targetSection.classList.add('active');
+                    }
+
+                    // Specific actions for sections when activated
+                    if (this.dataset.section === 'dashboard') {
+                        updateDashboardCards();
+                        renderAnnouncements('dashboard-announcements-list', mockAnnouncements.slice(0, 2)); // Show 2 recent for dashboard
+                    } else if (this.dataset.section === 'assignments') {
+                        renderAssignmentsTable(mockAssignments);
+                        populateAssignmentSelect(mockAssignments.filter(a => a.status === 'pending'));
+                    } else if (this.dataset.section === 'attendance') {
+                        loadStudentAttendance(loggedInRollNo).then(attendanceData => {
+                            renderAttendanceTable(attendanceData);
+                            renderAttendanceChart(attendanceData);
+                            updateDashboardCards(attendanceData);
+                        });
+                    } else if (this.dataset.section === 'timetable') {
+                        renderTimetable(showFullWeek ? Object.keys(mockTimetable) : [getTodayName()]);
+                    } else if (this.dataset.section === 'announcements') {
+                        renderAnnouncements('announcements-list', mockAnnouncements);
+                    }
+
+                    // Close sidebar on mobile after selection
+                    if (window.innerWidth < 1024) { // 1024px is Tailwind's 'lg' breakpoint
+                        toggleSidebar();
+                    }
+                });
+            });
+
+            // Initialize dashboard on page load
+            document.querySelector('.sidebar-item[data-section="dashboard"]').click();
+
+
+            // --- Dashboard Section Logic ---
+            function updateDashboardCards() {
+                const totalAssignments = mockAssignments.length;
+                const pendingSubmissions = mockAssignments.filter(a => a.status === 'pending').length;
+                const upcomingExams = 2; // Mock value for now
+                const totalAttendancePercentage = loadStudentAttendance().reduce((sum, item) => sum + item.percentage, 0) / loadStudentAttendance().length;
+
+                document.getElementById('total-assignments').textContent = totalAssignments;
+                document.getElementById('pending-submissions').textContent = pendingSubmissions;
+                document.getElementById('upcoming-exams').textContent = upcomingExams;
+                document.getElementById('avg-attendance').textContent = totalAttendancePercentage.toFixed(1) + '%';
+            }
+
+
+
+            // --- Announcements Section Logic ---
+            function renderAnnouncements(containerId, announcements) {
+                const container = document.getElementById(containerId);
+                container.innerHTML = ''; // Clear existing
+
+                if (announcements.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 italic">No announcements to display.</p>';
+                    return;
+                }
+
+                announcements.forEach(announcement => {
+                    const announcementDiv = document.createElement('div');
+                    announcementDiv.className = 'flex items-start p-4 bg-gray-50 rounded-lg shadow-sm border border-gray-200';
+                    let iconClass = '';
+                    let tagClass = '';
+
+                    switch (announcement.category) {
+                        case 'Assignment':
+                            iconClass = 'fas fa-tasks text-blue-500';
+                            tagClass = 'bg-blue-100 text-blue-800';
+                            break;
+                        case 'Class':
+                            iconClass = 'fas fa-chalkboard-teacher text-purple-500';
+                            tagClass = 'bg-purple-100 text-purple-800';
+                            break;
+                        case 'Exam':
+                            iconClass = 'fas fa-exclamation-circle text-red-500';
+                            tagClass = 'bg-red-100 text-red-800';
+                            break;
+                        default:
+                            iconClass = 'fas fa-info-circle text-gray-500';
+                            tagClass = 'bg-gray-200 text-gray-700';
+                    }
+
+                    announcementDiv.innerHTML = `
+                        <div class="flex-shrink-0 mr-4 mt-1">
+                            <i class="${iconClass} text-xl"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <h3 class="font-semibold text-gray-800 mb-1">${announcement.title}</h3>
+                            <p class="text-sm text-gray-600 mb-2">${announcement.date}</p>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${tagClass}">
+                                ${announcement.category}
+                            </span>
+                        </div>
+                    `;
+                    container.appendChild(announcementDiv);
+                });
+            }
+        });
+
+    </script><!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div id="flash-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 w-11/12 md:w-1/2 z-50">
+    {% for category, message in messages %}
+    <div class="p-3 mb-2 rounded-md text-white shadow-lg
+      {% if category == 'success' %} bg-green-500
+      {% elif category == 'danger' %} bg-red-500
+      {% elif category == 'warning' %} bg-yellow-500
+      {% else %} bg-blue-500 {% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<script>
+  // Remove flash messages after 3 seconds
+  setTimeout(() => {
+    const flashContainer = document.getElementById('flash-container');
+    if (flashContainer) {
+      flashContainer.remove();
+    }
+  }, 3000);
+</script>
+<script src="{{ url_for('static', filename='js/ai_module.js') }}"></script>
+
+ <!-- 🔹 Section Toggle Script (must be last) -->
+    <script>
+      document.querySelectorAll('.sidebar-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const sectionId = item.getAttribute('data-section');
+          document.querySelectorAll('.content-section').forEach(sec => sec.classList.add('hidden'));
+          document.getElementById(sectionId).classList.remove('hidden');
+        });
+      });
+    </script>
+</body>
+
+</html>

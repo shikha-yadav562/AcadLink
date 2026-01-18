@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Student Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gray-100 min-h-screen">
+ 
+
+  <main class="p-6 space-y-8">
+    <div id="lastUpdated" class="text-gray-600 text-sm italic mb-4"></div>
+    <section>
+      <h2 class="text-2xl font-bold text-indigo-700 mb-3">📘 Syllabus</h2>
+      <div id="syllabusDisplay" class="bg-white rounded-xl shadow p-4"></div>
+    </section>
+  </main>
+
+  <script>
+    const syllabusData = JSON.parse(localStorage.getItem('syllabusData') || '[]');
+    const lastUpdated = localStorage.getItem('lastUpdated') || 'Not available';
+    document.getElementById("lastUpdated").innerText = `Last updated on: ${lastUpdated}`;
+
+    const syllabusDisplay = document.getElementById('syllabusDisplay');
+
+    function escapeHTML(s) {
+      return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    function renderSyllabus() {
+      if (!Array.isArray(syllabusData) || syllabusData.length === 0) {
+        syllabusDisplay.innerHTML = `<em class="text-gray-500">No syllabus available yet.</em>`;
+        return;
+      }
+
+      syllabusDisplay.innerHTML = syllabusData.map((subj, i) => `
+        <div class="mb-4 border rounded-lg shadow hover:shadow-md transition">
+          <button id="subj-${i}" type="button" class="w-full text-left px-4 py-3 bg-indigo-100 rounded-t-lg font-semibold text-indigo-700 flex items-center justify-between">
+            <span>${escapeHTML(subj.name)} <span class="text-sm text-gray-500">(${escapeHTML(subj.type)})</span></span>
+            ${subj.notesLink ? `<a href="${subj.notesLink}" target="_blank" class="ml-3 text-blue-600 underline">📄 ${escapeHTML(subj.notesName || "Notes")}</a>` : ""}
+            <span class="transform transition-transform" data-arrow>▼</span>
+          </button>
+          <div id="det-${i}" class="hidden p-4 bg-gray-50">
+            ${renderUnits(subj)}
+          </div>
+        </div>
+      `).join("");
+
+      syllabusData.forEach((_, i) => {
+        const head = document.getElementById(`subj-${i}`);
+        const det = document.getElementById(`det-${i}`);
+        const arrow = head.querySelector('[data-arrow]');
+        head.addEventListener('click', () => {
+          det.classList.toggle('hidden');
+          arrow.classList.toggle('rotate-180');
+        });
+      });
+    }
+
+    function renderUnits(subj) {
+      if (!subj.units?.length) return `<em class="text-gray-500">No units</em>`;
+      return `
+        <ul class="ml-6 mt-2 space-y-2">
+          ${subj.units.map(u => `
+            <li>
+              <span class="font-semibold">Unit: ${escapeHTML(u.name)}</span>
+              ${u.topics?.length ? `
+                <ol class="ml-6 mt-2 list-decimal space-y-1">
+                  ${u.topics.map(t => `
+                    <li>
+                      <span class="font-medium">${escapeHTML(t.name)}</span>
+                      ${t.subtopics?.length ? `
+                        <ul class="ml-6 list-disc space-y-1">
+                          ${t.subtopics.map(s => `<li>${escapeHTML(s)}</li>`).join('')}
+                        </ul>` : ``}
+                    </li>
+                  `).join('')}
+                </ol>` : ``}
+            </li>
+          `).join('')}
+        </ul>
+      `;
+    }
+
+    renderSyllabus();
+  </script>
+</body>
+</html>

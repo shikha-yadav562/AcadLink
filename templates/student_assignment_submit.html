@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Assignment Submission | AcadLink</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a2e0e6ad63.js" crossorigin="anonymous"></script>
+  <style>
+    /* Toast Animation */
+    .toast {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease-in-out;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Smooth hover glow for buttons */
+    .hover-glow:hover {
+      box-shadow: 0 0 10px rgba(99, 102, 241, 0.4);
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-to-br from-indigo-50 via-white to-indigo-100 min-h-screen flex flex-col items-center justify-center p-6">
+
+  <div class="bg-white shadow-2xl rounded-2xl w-full max-w-3xl p-8">
+    <header class="border-b pb-4 mb-6">
+      <h1 class="text-2xl md:text-3xl font-extrabold text-indigo-700 flex items-center gap-2">
+        <i class="fas fa-upload text-indigo-600"></i> AI Assignment Submission
+      </h1>
+      <p class="text-gray-500 text-sm mt-1">Submit your assignments and track verification status in real time.</p>
+    </header>
+
+    <!-- Submission Form -->
+    <div class="space-y-4">
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Select Assignment</label>
+        <select id="assignment_id" class="w-full border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500">
+          <option value="">-- Choose Assignment --</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-1">Upload File</label>
+        <input id="file" type="file"
+               class="w-full border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-500" />
+      </div>
+
+      <button onclick="submitAssignment()"
+              class="w-full bg-indigo-600 text-white py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition hover-glow">
+        <i class="fas fa-paper-plane mr-2"></i> Submit Assignment
+      </button>
+    </div>
+  </div>
+
+  <!-- Table of Submissions -->
+  <div class="bg-white shadow-xl rounded-2xl w-full max-w-4xl p-8 mt-10">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+        <i class="fas fa-tasks text-indigo-600"></i> Your Submissions
+      </h2>
+      <span class="text-xs text-gray-500">Auto-refreshes every 10 seconds</span>
+    </div>
+
+    <div class="overflow-x-auto rounded-lg">
+      <table class="min-w-full text-sm border border-gray-200 rounded-lg">
+        <thead class="bg-indigo-600 text-white uppercase text-xs">
+          <tr>
+            <th class="px-6 py-3 text-left">Assignment</th>
+            <th class="px-6 py-3 text-left">AI Score</th>
+            <th class="px-6 py-3 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody id="submission_table" class="divide-y divide-gray-200 bg-white"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ✅ Toast Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 space-y-2 z-50"></div>
+
+  <!-- ✅ Core JS -->
+  <script src="/static/js/ai_module.js"></script>
+
+  <!-- ✅ Real-time Notifications -->
+  <script>
+    async function checkNotifications() {
+      try {
+        const res = await fetch("/api/student_notifications");
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          data.forEach(n => showToast(n.message, "info"));
+        }
+      } catch (err) {
+        console.error("Notification error:", err);
+      }
+    }
+
+    // 🔁 Auto-check every 15 seconds (only if submissions exist)
+    setInterval(() => {
+      if (document.getElementById("submission_table")) {
+        checkNotifications();
+      }
+    }, 15000);
+  </script>
+
+  <!-- ✅ Improved Toast Function -->
+  <script>
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      toast.className =
+        "toast px-4 py-3 rounded-lg shadow-md text-white font-medium flex items-center gap-2 " +
+        (type === "success"
+          ? "bg-green-600"
+          : type === "error"
+          ? "bg-red-600"
+          : "bg-indigo-600");
+
+      toast.innerHTML = `
+        <i class="fas ${type === "success"
+          ? "fa-check-circle"
+          : type === "error"
+          ? "fa-times-circle"
+          : "fa-info-circle"}"></i>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => toast.classList.add("show"), 50);
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 400);
+      }, 4000);
+    }
+  </script>
+
+</body>
+</html>

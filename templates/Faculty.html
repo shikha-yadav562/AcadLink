@@ -1,0 +1,1241 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcadLink Faculty Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Custom scrollbar for main content */
+        .main-content-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .main-content-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .main-content-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+
+        .main-content-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Active sidebar item styling */
+        .active-sidebar-item {
+            background-color: #4f46e5;
+            /* Tailwind's indigo-600 */
+            color: #ffffff;
+            /* White text */
+        }
+
+        /* Table header styles for sortable columns */
+        .sortable-th {
+            cursor: pointer;
+            position: relative;
+            padding-right: 25px;
+            /* Space for sort icon */
+        }
+
+        .sortable-th::after {
+            content: '';
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 4px solid transparent;
+        }
+
+        .sortable-th.asc::after {
+            border-bottom-color: #333;
+            /* Up arrow */
+        }
+
+        .sortable-th.desc::after {
+            border-top-color: #333;
+            /* Down arrow */
+        }
+    </style>
+</head>
+
+<body class="font-sans bg-gray-100 min-h-screen flex">
+
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+
+    <aside id="sidebar"
+        class="w-64 bg-white shadow-lg flex flex-col justify-between fixed inset-y-0 left-0 z-40 transform -translate-x-full transition-transform duration-300 ease-in-out lg:translate-x-0 lg:block">
+        <div>
+            <div class="flex items-center mb-4 px-3 py-1">
+                <div
+                    class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-purple-600 text-white rounded-md flex items-center justify-center text-3xl font-bold ">
+                    🎓</div>
+                <div class="ml-2">
+                    <h1 class="font-extrabold text-indigo-700 text-3xl">AcadLink</h1>
+                    <p class="text-sm text-gray-500 -mt-1">Smart Academic Manager</p>
+                </div>
+            </div>
+
+            <nav>
+                <ul>
+                    <li class="mb-2">
+                        <a href="#"
+                            class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200 active-sidebar-item"
+                            data-section="dashboard">
+                            <i class="fas fa-th-large mr-4 text-lg"></i>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                      <a href="#" 
+   class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200"
+   data-section="assignments">
+   <i class="fas fa-tasks mr-4 text-lg"></i>
+   AI Assignments
+</a>
+<script>
+document.querySelectorAll(".sidebar-item").forEach(item => {
+  item.addEventListener("click", (e) => {
+    e.preventDefault(); // prevents page reload
+    const sectionId = item.getAttribute("data-section");
+
+    document.querySelectorAll(".content-section").forEach(sec => {
+      sec.classList.add("hidden");
+    });
+
+    const target = document.getElementById(sectionId);
+    if (target) {
+      target.classList.remove("hidden");
+      console.log("✅ Showing section:", sectionId);
+    } else {
+      console.error("❌ Section not found:", sectionId);
+    }
+  });
+});
+</script>
+
+
+
+                    </li>
+                    <li class="mb-2">
+                        <a href="#"
+                            class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200"
+                            data-section="students">
+                            <i class="fas fa-users mr-4 text-lg"></i>
+                            Student
+                        </a>
+                    </li>
+     <!-- Sidebar Item -->
+<li class="mb-2">
+  <a href="#"
+     id="timetable-tab"
+     data-section="timetable"
+     class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200">
+     <i class="fas fa-calendar-alt mr-4"></i> Timetable
+  </a>
+</li>
+
+
+
+                    <li class="mb-2">
+                        <a href="#"
+                            class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200"
+                            data-section="attendance">
+                            <i class="fas fa-calendar-check mr-4 text-lg"></i>
+                            Attendance
+                        </a>
+                    </li>
+                   
+                    <li class="mb-2">
+                        <a href="#"
+                            class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200"
+                            data-section="profile">
+                            <i class="fas fa-user mr-4 text-lg"></i>
+                            Profile
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#"
+                            class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200"
+                            data-section="chat">
+                            <i class="fas fa-comments mr-4 text-lg"></i>
+                            Chat
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="#"
+                            class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors duration-200"
+                            data-section="notes">
+                            <i class="fas fa-upload mr-4 text-lg"></i>
+                            Notes & Syallbus
+                        </a>
+                    </li>
+<li class="mb-2">
+  <a href="#"
+     class="sidebar-item flex items-center py-3 px-6 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition"
+     data-section="announcements-section">
+     <i class="fas fa-bullhorn mr-4 text-lg"></i> Announcements
+  </a>
+</li>
+<script>
+document.querySelectorAll(".sidebar-item").forEach(item => {
+  item.addEventListener("click", e => {
+    e.preventDefault();
+    const sectionId = item.getAttribute("data-section");
+
+    // hide all
+    document.querySelectorAll(".content-section").forEach(sec => sec.classList.add("hidden"));
+
+    // show clicked
+    const active = document.getElementById(sectionId);
+    if (active) {
+      active.classList.remove("hidden");
+      console.log("✅ Showing section:", sectionId);
+    } else {
+      console.error("❌ Section not found:", sectionId);
+    }
+
+    // optional: reload announcements when section opens
+    if (sectionId === "announcements-section") loadAnnouncements();
+  });
+});
+</script>
+    </ul>
+            </nav>
+        </div>
+
+        <div class="px-6 pb-4 border-t border-gray-200 pt-4">
+            <div class="flex items-center">
+                <div>
+                    <div class="font-semibold text-gray-800">{{ faculty[1] }}</div>
+                    <div class="text-sm text-gray-500">{{ faculty[4] }}</div>
+                    <div class="text-xs text-gray-400">{{ faculty[3] }}</div>
+
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 ml-0 lg:ml-64 p-4 sm:p-6 md:p-8 overflow-y-auto main-content-scroll">
+        <header class="bg-white rounded-lg shadow-sm py-4 px-4 sm:px-6 flex justify-between items-center mb-8">
+            <button id="hamburger-btn" class="text-gray-600 hover:text-gray-900 lg:hidden focus:outline-none">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <h1 class="text-xl sm:text-2xl font-bold text-gray-800 ml-4 lg:ml-0">Faculty Dashboard</h1>
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                <div class="text-gray-700 text-sm hidden md:block">Welcome , {{ faculty[1] }}</div>
+            </div>
+        </header>
+
+        <div id="dashboard-section" class="content-section">
+            <h2 class="text-xl font-semibold text-gray-700 mb-6">Teaching Excellence Dashboard</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8">
+                <div
+                    class="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg p-6 shadow-md text-white flex items-center justify-between">
+                    <div>
+                        <div class="text-3xl font-bold">120</div>
+                        <div class="text-sm opacity-90">Students</div>
+                    </div>
+                    <i class="fas fa-users text-4xl opacity-70"></i>
+                </div>
+                <div class="bg-white rounded-lg p-6 shadow-md text-gray-700 flex items-center justify-between">
+                    <div>
+                        <div class="text-3xl font-bold">8</div>
+                        <div class="text-sm text-gray-500">Assignments</div>
+                    </div>
+                    <i class="fas fa-file-alt text-4xl text-gray-400"></i>
+                </div>
+                <div class="bg-white rounded-lg p-6 shadow-md text-gray-700 flex items-center justify-between">
+                    <div>
+                        <div class="text-3xl font-bold">82%</div>
+                        <div class="text-sm text-gray-500">Avg Attendance</div>
+                    </div>
+                    <i class="fas fa-chart-line text-4xl text-gray-400"></i>
+                </div>
+                <div class="bg-white rounded-lg p-6 shadow-md text-gray-700 flex items-center justify-between">
+                    <div>
+                        <div class="text-3xl font-bold">76%</div>
+                        <div class="text-sm text-gray-500">Submission Rate</div>
+                    </div>
+                    <i class="fas fa-check-circle text-4xl text-gray-400"></i>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 mb-8">
+                <div class="bg-white rounded-lg p-6 shadow-md flex flex-col items-center justify-center text-center">
+                    <div class="p-4 bg-blue-100 rounded-full mb-4">
+                        <i class="fas fa-plus text-blue-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Create Assignment</h3>
+                    <p class="text-sm text-gray-500 mb-4">Design and publish new assignments</p>
+                    <button
+                        class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                        onclick="document.querySelector('.sidebar-item[data-section=\'assignments\']').click(); document.getElementById('new-assignment-btn').click();">Get
+                        Started</button>
+                </div>
+                <div class="bg-white rounded-lg p-6 shadow-md flex flex-col items-center justify-center text-center">
+                    <div class="p-4 bg-purple-100 rounded-full mb-4">
+                        <i class="fas fa-calendar-alt text-purple-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Mark Attendance</h3>
+                    <p class="text-sm text-gray-500 mb-4">Track student attendance easily</p>
+                    <button
+                        class="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 transition-colors duration-200"
+                        onclick="document.querySelector('.sidebar-item[data-section=\'attendance\']').click();">Take
+                        Attendance</button>
+                </div>
+                <div class="bg-white rounded-lg p-6 shadow-md flex flex-col items-center justify-center text-center">
+                    <div class="p-4 bg-green-100 rounded-full mb-4">
+                        <i class="fas fa-chart-bar text-green-600 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">View Analytics</h3>
+                    <p class="text-sm text-gray-500 mb-4">Analyze student performance</p>
+                    <button
+                        class="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors duration-200"
+                        onclick="document.querySelector('.sidebar-item[data-section=\'analytics\']').click();">View
+                        Insights</button>
+                </div>
+            </div>
+
+
+        </div>
+   
+<div id="assignments-section" class="content-section hidden">
+  <iframe 
+    src="{{ url_for('ai_assignment_bp.faculty_ai_assignment_page') }}" 
+    width="100%" 
+    height="1000px" 
+    frameborder="0" 
+    style="border-radius: 10px; width: 100%; background: #fff;"
+  ></iframe>
+</div>
+
+
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const assignmentsTableBody = document.getElementById("faculty-assignments-table-body");
+                const assignmentSearch = document.getElementById("assignment-search");
+                const assignmentFilterStatus = document.getElementById("assignment-filter-status");
+                const newAssignmentBtn = document.getElementById("new-assignment-btn");
+                const cancelAssignmentBtn = document.getElementById("cancel-assignment-btn");
+                const createAssignmentForm = document.getElementById("create-assignment-form");
+                const createAssignmentSubmitBtn = document.getElementById("create-assignment-submit-btn");
+                const assignmentFileInput = document.getElementById("assignment-file-input");
+                const selectedAssignmentFileNameSpan = document.getElementById("selected-assignment-file-name");
+
+                let assignments = [];
+
+                // Fetch assignments
+                async function fetchAssignments() {
+                    try {
+                        const res = await fetch("/api/faculty_assignments");
+                        assignments = await res.json();
+                        renderAssignments(assignments);
+                    } catch (err) {
+                        console.error("Error fetching assignments:", err);
+                    }
+                }
+
+                // Render assignments
+                function renderAssignments(list) {
+                    assignmentsTableBody.innerHTML = "";
+
+                    list.forEach(a => {
+                        const row = document.createElement("tr");
+                        row.className = "hover:bg-gray-50";
+
+                        const statusClass = {
+                            "pending": "bg-yellow-100 text-yellow-800",
+                            "submitted": "bg-green-100 text-green-800",
+                            "graded": "bg-blue-100 text-blue-800"
+                        }[a.status] || "bg-gray-100 text-gray-800";
+
+                        row.innerHTML = `
+           
+     <td class="px-6 py-4">${a.title}</td>
+    <td class="px-6 py-4">${a.subject}</td>
+    <td class="px-6 py-4">${a.due_date}</td>
+    <td class="px-6 py-4">${a.max_marks}</td>
+    <td class="px-6 py-4">
+        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass}">
+            ${a.status}
+        </span>
+    </td>
+    <td class="px-6 py-4">N/A</td>
+    <td class="px-6 py-4 space-x-2">
+        <button onclick="viewAssignment('${a.file_path}')" class="text-indigo-600 hover:text-indigo-900">View</button>
+        <button class="text-yellow-600 hover:text-yellow-900 edit-btn">Edit</button>
+        <button onclick="deleteAssignment(${a.id})" class="text-red-600 hover:text-red-900">Delete</button>
+    </td>
+`;
+                        assignmentsTableBody.appendChild(row);
+                    });
+                }
+
+                // Search & Filter
+                function filterAssignments() {
+                    const term = assignmentSearch.value.toLowerCase();
+                    const status = assignmentFilterStatus.value;
+
+                    let filtered = assignments.filter(a =>
+                        a.title.toLowerCase().includes(term) ||
+                        a.subject.toLowerCase().includes(term) ||
+                        a.class_name.toLowerCase().includes(term)
+                    );
+
+                    if (status !== "all") {
+                        filtered = filtered.filter(a => a.status === status);
+                    }
+
+                    renderAssignments(filtered);
+                }
+                assignmentSearch.addEventListener("input", filterAssignments);
+                assignmentFilterStatus.addEventListener("change", filterAssignments);
+
+                // Toggle form
+                newAssignmentBtn.addEventListener("click", () => {
+                    createAssignmentForm.classList.toggle("hidden");
+                    if (!createAssignmentForm.classList.contains("hidden")) {
+                        createAssignmentForm.scrollIntoView({ behavior: "smooth" });
+                    }
+                });
+                cancelAssignmentBtn.addEventListener("click", () => {
+                    createAssignmentForm.classList.add("hidden");
+                    clearForm();
+                });
+
+                // File input
+                assignmentFileInput.addEventListener("change", (e) => {
+                    selectedAssignmentFileNameSpan.textContent =
+                        e.target.files.length > 0 ? `Selected: ${e.target.files[0].name}` : "";
+                });
+
+                // Submit new assignment
+                createAssignmentSubmitBtn.addEventListener("click", async () => {
+                    const title = document.getElementById("assignment-title").value;
+                    const subject = document.getElementById("assignment-subject").value;
+                    const dueDate = document.getElementById("assignment-due-date").value;
+                    const maxMarks = document.getElementById("assignment-max-marks").value;
+                    const description = document.getElementById("assignment-description").value;
+                    const className = document.getElementById("assignment-class").value;
+                    const file = assignmentFileInput.files[0];
+
+                    if (!title || !subject || !className || !maxMarks) {
+                        alert("Title, Subject, Class, and Max Marks are required.");
+                        return;
+                    }
+                    if (!file) {
+                        alert("Please upload a file.");
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append("title", title);
+                    formData.append("subject", subject);
+                    formData.append("due_date", dueDate);
+                    formData.append("max_marks", maxMarks);
+                    formData.append("description", description || "");
+                    formData.append("class_name", className);
+                    formData.append("file", file);
+
+                    try {
+                        const res = await fetch("/create_assignment", {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        if (res.ok) {
+                            alert("Assignment created!");
+                            createAssignmentForm.classList.add("hidden");
+                            clearForm();
+                            fetchAssignments();
+                        } else {
+                            alert("Error creating assignment.");
+                        }
+                    } catch (err) {
+                        console.error("Error submitting assignment:", err);
+                    }
+                });
+
+                // Clear form
+                function clearForm() {
+                    document.getElementById("assignment-title").value = "";
+                    document.getElementById("assignment-subject").value = "";
+                    document.getElementById("assignment-due-date").value = "";
+                    document.getElementById("assignment-max-marks").value = "";
+                    document.getElementById("assignment-description").value = "";
+                    document.getElementById("assignment-class").value = "";
+                    assignmentFileInput.value = "";
+                    selectedAssignmentFileNameSpan.textContent = "";
+                }
+
+                // Initial load
+                fetchAssignments();
+            });
+            function viewAssignment(filename) {
+                if (!filename) {
+                    alert("No file uploaded for this assignment.");
+                    return;
+                }
+                window.open(`/assignments/${filename}`, "_blank");
+            }
+            async function deleteAssignment(id) {
+                if (!confirm("Are you sure you want to delete this assignment?")) return;
+
+                const res = await fetch(`/delete_assignment/${id}`, { method: "POST" });
+                const result = await res.json();
+                if (result.status === "success") {
+                    alert("Assignment deleted!");
+                    fetchAssignments();
+                } else {
+                    alert("Error: " + result.message);
+                }
+            }
+            function viewAssignment(filePath) {
+    if (!filePath) {
+        alert("No file uploaded for this assignment.");
+        return;
+    }
+    window.open(`/assignments/${filePath}`, "_blank");
+}
+
+        </script>
+
+
+
+
+        <!-- ---------- Student Management Section ---------- -->
+        <div id="students-section" class="content-section hidden">
+            <div class="mt-10 bg-white shadow-md rounded-lg p-6">
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-2xl font-bold text-indigo-700">Manage Students</h2>
+                    <button onclick="document.getElementById('uploadBlock').classList.toggle('hidden')"
+                        class="flex items-center bg-green-600 hover:bg-green-700 text-white font-medium px-4 py-2 rounded-lg shadow transition">
+                        <i class="fas fa-plus mr-2"></i> Add Students
+                    </button>
+                </div>
+
+                <!-- Upload Block -->
+                <div id="uploadBlock" class="hidden mt-4 border rounded-lg bg-gray-50 p-5 shadow-inner">
+                    <form action="/upload_students" method="post" enctype="multipart/form-data" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-1 text-gray-700">Class Name</label>
+                            <input type="text" name="class_name" placeholder="e.g. TYIT, SYCS A"
+                                class="w-full border border-gray-300 px-3 py-2 rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                                required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-1 text-gray-700">Upload Excel Sheet</label>
+                            <input type="file" name="file" accept=".xlsx,.xls"
+                                class="w-full border border-gray-300 px-3 py-2 rounded-md focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white"
+                                required>
+                            <p class="text-xs text-gray-500 mt-1">Allowed: Excel (.xlsx, .xls) with columns <strong>Roll
+                                    No, Name</strong></p>
+                        </div>
+                        <div class="flex justify-end">
+                            <button type="submit"
+                                class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-5 py-2 rounded-lg shadow transition">
+                                <i class="fas fa-upload mr-2"></i> Upload Students
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Class Cards -->
+                <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" id="class-cards">
+                    {% for c in classes %}
+                    <div class="cursor-pointer bg-gradient-to-r from-indigo-400 to-indigo-600 hover:from-indigo-500 hover:to-indigo-700 p-6 rounded-2xl shadow-lg text-white transition transform hover:-translate-y-1"
+                        onclick="toggleClassTable('{{ c }}', this)">
+                        <h3 class="text-lg font-bold text-center">{{ c }}</h3>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Student Table -->
+                <div id="class-students" class="mt-6 hidden">
+                    <h3 class="text-lg font-bold mb-2">Class: <span id="class-title"></span></h3>
+                    <div class="overflow-x-auto rounded-lg border border-gray-200">
+                        <table class="min-w-full text-sm">
+                            <thead class="bg-indigo-600 text-white">
+                                <tr>
+                                    <th class="py-2 px-4 text-left">Roll No</th>
+                                    <th class="py-2 px-4 text-left">Name</th>
+                                    <th class="py-2 px-4 text-left">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="class-student-body" class="bg-white divide-y divide-gray-200"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let currentOpenClass = null;
+
+            function toggleClassTable(className, card) {
+                const tableDiv = document.getElementById("class-students");
+
+                if (currentOpenClass === className) {
+                    tableDiv.classList.add("hidden");
+                    currentOpenClass = null;
+                    card.classList.remove("ring-4", "ring-indigo-300");
+                    return;
+                }
+
+                // Remove highlight from all cards
+                document.querySelectorAll("#class-cards > div").forEach(c => c.classList.remove("ring-4", "ring-indigo-300"));
+
+                // Highlight clicked card
+                card.classList.add("ring-4", "ring-indigo-300");
+
+                // Load students
+                fetch(`/get_students/${encodeURIComponent(className)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        document.getElementById("class-title").innerText = className;
+                        const tbody = document.getElementById("class-student-body");
+                        tbody.innerHTML = "";
+                        data.forEach(st => {
+                            tbody.innerHTML += `
+            <tr>
+              <td class="py-2 px-4">${st.roll_no}</td>
+              <td class="py-2 px-4">${st.name}</td>
+              <td class="py-2 px-4">
+                <button onclick="deleteStudent('${st.roll_no}','${className}')"
+                        class="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded transition">
+                  Delete
+                </button>
+              </td>
+            </tr>
+          `;
+                        });
+                        tableDiv.classList.remove("hidden");
+                        currentOpenClass = className;
+                    });
+            }
+
+            function deleteStudent(rollNo, className) {
+                if (!confirm("Are you sure you want to delete this student?")) return;
+                fetch(`/delete_student/${rollNo}`, { method: "POST" })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            alert("Student deleted successfully");
+                            const card = [...document.querySelectorAll('#class-cards > div')]
+                                .find(div => div.innerText.trim() === className);
+                            toggleClassTable(className, card);
+
+                        } else alert("Error: " + data.message);
+                    });
+            }
+        </script>
+
+        <!-- ---------- Attendance Section ---------- -->
+        <div id="attendance-section" class="mt-10 content-section hidden">
+            <h2 class="text-xl font-semibold text-gray-700 mb-6">Attendance Management</h2>
+
+            <!-- Recent Classes -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Classes</h3>
+                <div id="recent-classes" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Filled dynamically from DB -->
+                </div>
+            </div>
+            <script>
+                async function loadRecentClasses() {
+                    try {
+                        const res = await fetch("/api/recent_classes");
+                        const data = await res.json();
+                        const container = document.getElementById("recent-classes");
+                        container.innerHTML = "";
+
+                        if (data.length === 0) {
+                            container.innerHTML = `<p class="text-gray-500 italic">No recent lectures found.</p>`;
+                            return;
+                        }
+
+                        data.forEach(cls => {
+                            let color = cls.percentage >= 75 ? "text-green-600"
+                                : cls.percentage >= 50 ? "text-yellow-600"
+                                    : "text-red-600";
+
+                            container.innerHTML += `
+                <div class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+                    <div class="font-semibold text-gray-800">${cls.subject}</div>
+                    <div class="text-sm text-gray-500 mb-2">${cls.date}</div>
+                    <div class="text-sm text-gray-700">
+                        ${cls.present}/${cls.total} 
+                        <span class="font-bold ${color}">${cls.percentage}% Present</span>
+                    </div>
+                </div>
+            `;
+                        });
+                    } catch (err) {
+                        console.error("Failed to load recent classes:", err);
+                    }
+                }
+
+                // Load on page load
+                document.addEventListener("DOMContentLoaded", loadRecentClasses);
+            </script>
+
+
+            <!-- Take Attendance -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Take Attendance</h3>
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Select Class/Subject:</label>
+                    <select id="class-select"
+                        class="w-full border border-gray-300 px-3 py-2 rounded-md focus:ring-2 focus:ring-indigo-500">
+                        <option value="">Select a class</option>
+                        {% for c in classes %}
+                        <option value="{{ c }}">{{ c }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <input id="subject-input" type="text" placeholder="Subject"
+                    class="border w-full px-3 py-2 rounded-md mb-2 focus:ring-2 focus:ring-indigo-500" />
+
+                <input id="date-input" type="date" max="" value=""
+                    class="border w-full px-3 py-2 rounded-md mb-4 focus:ring-2 focus:ring-indigo-500" />
+                <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                        const dateInput = document.getElementById("date-input");
+                        if (dateInput) {
+                            const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+                            dateInput.max = today;  // 🔒 No future dates
+                            dateInput.value = today; // 📅 Default to today
+                        }
+                    });
+                </script>
+
+                <button id="load-btn"
+                    class="bg-indigo-600 text-white px-4 py-2 rounded-md mb-4 hover:bg-indigo-700 transition">Refresh
+                    List</button>
+
+                <!-- Student List -->
+                <div id="student-list" class="mt-4"></div>
+
+                <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 mt-4">
+                    <button id="submit-attendance-btn"
+                        class="bg-purple-600 text-white px-6 py-2 rounded-md hover:bg-purple-700 transition w-full sm:w-auto">
+                        Submit Attendance
+                    </button>
+                   
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // Load students ONLY when Load button is clicked
+            document.getElementById("load-btn").addEventListener("click", () => {
+                const cls = document.getElementById("class-select").value;
+                if (!cls) {
+                    alert("Select a class");
+                    return;
+                }
+
+                fetch(`/get_students/${encodeURIComponent(cls)}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        const list = document.getElementById("student-list");
+                        list.innerHTML = "";
+                        if (data.length === 0) {
+                            list.innerHTML = "<p class='text-gray-500 italic'>No students in this class yet.</p>";
+                            return;
+                        }
+                        data.forEach(st => {
+                            list.innerHTML += `
+          <label class="flex items-center gap-2 mb-2">
+            <input type="checkbox" data-id="${st.roll_no}" class="stu-check">
+            <span>${st.name} (${st.roll_no})</span>
+          </label>
+        `;
+                        });
+                    });
+            });
+
+            // Submit attendance
+            document.getElementById("submit-attendance-btn").addEventListener("click", () => {
+                const className = document.getElementById("class-select").value;
+                const subject = document.getElementById("subject-input").value.trim();
+                const dateVal = document.getElementById("date-input").value;
+
+                if (!className || !subject) {
+                    alert("Select class and enter subject");
+                    return;
+                }
+
+                const students = [];
+                document.querySelectorAll(".stu-check").forEach(cb => {
+                    students.push({ id: cb.dataset.id, present: cb.checked });
+                });
+
+                fetch("/submit_attendance", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ class_name: className, subject, date: dateVal || null, students })
+                })
+                    .then(r => r.json())
+                    .then(res => {
+                        if (res.status === "success") {
+                            alert(`Saved attendance for ${subject} (${res.saved} entries)`);
+                        } else {
+                            alert("Error: " + res.message);
+                        }
+                    });
+            });
+
+            // Download report
+            document.getElementById("download-report").addEventListener("click", function () {
+                let className = document.getElementById("class-select").value;
+                let subject = prompt("Enter subject for report:");
+                if (!className || !subject) {
+                    alert("Please select class and enter subject.");
+                    return;
+                }
+                window.location.href = `/download_report/${className}/${encodeURIComponent(subject)}`;
+            });
+        </script>
+
+       
+        <div id="chat-section" class="content-section hidden">
+            <h2 class="text-xl font-semibold text-gray-700 mb-6">Chat</h2>
+            <div class="bg-white rounded-lg shadow-md p-6 h-96 flex flex-col">
+                <div class="flex-1 overflow-y-auto mb-4 border border-gray-200 rounded-lg p-4">
+                    <div class="flex justify-start mb-2">
+                        <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-xs">
+                            Hi ,{{ faculty[1] }}, I have a question about the recent assignment.
+                        </div>
+                    </div>
+                    <div class="flex justify-end mb-2">
+                        <div class="bg-indigo-600 text-white p-3 rounded-lg max-w-xs">
+                            Sure, how can I help?
+                        </div>
+                    </div>
+                    <div class="flex justify-start mb-2">
+                        <div class="bg-gray-200 text-gray-800 p-3 rounded-lg max-w-xs">
+                            Could you clarify the requirements for question 3?
+                        </div>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <input type="text" placeholder="Type your message..."
+                        class="flex-1 border border-gray-300 rounded-lg px-4 py-2 mr-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    <button
+                        class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors duration-200">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ---------- Announcement Creation Section (Faculty) ---------- -->
+<div id="announcements-section" class="content-section hidden">
+  <div class="bg-white shadow-lg rounded-2xl p-6 mt-6">
+    <h2 class="text-xl font-bold text-gray-800 mb-4">📢 Create Announcement</h2>
+    <form id="announcement-form" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+        <input id="announce-title" type="text"
+          class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+          placeholder="Enter announcement title">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+        <textarea id="announce-message"
+          class="w-full border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 p-2"
+          rows="4" placeholder="Write the announcement here..."></textarea>
+      </div>
+      <button type="button" id="post-announcement"
+        class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">
+        Post Announcement
+      </button>
+      <p id="announce-status" class="text-sm mt-2 text-gray-600"></p>
+    </form>
+  </div>
+</div>
+
+<script>
+document.getElementById("post-announcement").addEventListener("click", async () => {
+  const title = document.getElementById("announce-title").value.trim();
+  const message = document.getElementById("announce-message").value.trim();
+  const statusEl = document.getElementById("announce-status");
+
+  if (!title || !message) {
+    statusEl.textContent = "⚠️ Please fill in all fields.";
+    statusEl.className = "text-red-500 text-sm mt-2";
+    return;
+  }
+
+  const res = await fetch("/api/announcements/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, message })
+  });
+
+  const result = await res.json();
+
+  if (result.status === "success") {
+    statusEl.textContent = "✅ Announcement posted successfully!";
+    statusEl.className = "text-green-600 text-sm mt-2";
+    document.getElementById("announce-title").value = "";
+    document.getElementById("announce-message").value = "";
+  } else {
+    statusEl.textContent = "❌ Error: " + result.message;
+    statusEl.className = "text-red-500 text-sm mt-2";
+  }
+});
+</script>
+
+ <!-- timetable Section -->
+
+<section id="timetable-section" class="content-section hidden">
+  <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center">
+      <i class="fas fa-calendar-alt mr-2 text-indigo-600"></i> Manage Timetable
+    </h3>
+
+    <div id="timetable-header" class="text-gray-700 font-medium mb-4"></div>
+    <div id="timetable-form" class="overflow-x-auto"></div>
+    <p id="status" class="text-sm text-gray-600 mt-4"></p>
+  </div>
+</section>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const days = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+  const container = document.getElementById("timetable-form");
+  const header = document.getElementById("timetable-header");
+  const status = document.getElementById("status");
+
+  let className = "";
+  let timetable = {};
+
+  // 🔹 Make functions globally accessible
+  window.showSection = function (id) {
+    document.querySelectorAll('.content-section').forEach(s => s.classList.add('hidden'));
+    document.getElementById(id)?.classList.remove('hidden');
+  };
+
+  window.openTimetable = async function() {
+    className = prompt("Enter class name (e.g., IT-A):");
+    if (!className) return alert("❌ Class name is required!");
+
+    status.textContent = "Checking timetable...";
+    try {
+      const res = await fetch(`/get_timetable?class_name=${className}`);
+      const data = await res.json();
+      timetable = data.timetable || {};
+
+      if (Object.keys(timetable).length > 0) {
+        status.textContent = `✅ Loaded existing timetable for ${className}`;
+        header.innerHTML = `<span class="text-indigo-700 font-semibold">Editing timetable for ${className}</span>`;
+        renderTimetable();
+      } else {
+        const confirmNew = confirm(`No timetable found for ${className}. Would you like to create one?`);
+        if (confirmNew) {
+          timetable = {};
+          header.innerHTML = `<span class="text-indigo-700 font-semibold">Creating new timetable for ${className}</span>`;
+          renderTimetable();
+        } else {
+          status.textContent = "Cancelled.";
+          container.innerHTML = "";
+        }
+      }
+    } catch (err) {
+      console.error("❌ Fetch error:", err);
+      status.textContent = "Error loading timetable.";
+    }
+  };
+
+  // 🔹 Render timetable editor
+  function renderTimetable() {
+    let html = "";
+    days.forEach(day => {
+      html += `
+        <div class="mb-6">
+          <div class="flex items-center gap-3 mb-2">
+            <h4 class="font-semibold text-indigo-700">${day}</h4>
+            <button class="addLecture bg-green-500 text-white px-2 py-1 rounded text-sm" data-day="${day}">+ Add Lecture</button>
+          </div>
+          <div id="lectures-${day}" class="space-y-2">
+            ${(timetable[day]||[]).map((lec,idx)=>lectureForm(day,idx,lec)).join("")}
+          </div>
+        </div>`;
+    });
+    container.innerHTML = html + `
+      <div class="flex justify-end mt-6">
+        <button id="saveBtn" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">
+          💾 Save Timetable
+        </button>
+      </div>`;
+    attachListeners();
+  }
+
+  // 🔹 Generate lecture row
+  function lectureForm(day,idx,lec){
+    return `
+      <div class="lecture border border-gray-300 rounded p-2 flex flex-col md:flex-row gap-2 items-center" data-day="${day}" data-idx="${idx}">
+        <input type="time" value="${lec.start||""}" data-field="start" class="border rounded px-2 py-1 w-28">
+        <span class="text-gray-400 text-sm">to</span>
+        <input type="time" value="${lec.end||""}" data-field="end" class="border rounded px-2 py-1 w-28">
+        <input type="text" value="${lec.subject||""}" data-field="subject" placeholder="Subject" class="border rounded px-2 py-1 w-32">
+        <input type="text" value="${lec.teacher||""}" data-field="teacher" placeholder="Teacher" class="border rounded px-2 py-1 w-32">
+        <button class="deleteLecture bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-sm">🗑️</button>
+      </div>`;
+  }
+
+  // 🔹 Handle buttons and inputs
+  function attachListeners() {
+    document.querySelectorAll(".addLecture").forEach(btn=>{
+      btn.onclick=()=>{
+        const day=btn.dataset.day;
+        if(!timetable[day]) timetable[day]=[];
+        timetable[day].push({start:"",end:"",subject:"",teacher:""});
+        renderTimetable();
+      };
+    });
+
+    document.querySelectorAll(".lecture input").forEach(input=>{
+      input.onchange=e=>{
+        const lecDiv=e.target.closest(".lecture");
+        const day=lecDiv.dataset.day;
+        const idx=lecDiv.dataset.idx;
+        timetable[day][idx][e.target.dataset.field]=e.target.value;
+      };
+    });
+
+    document.querySelectorAll(".deleteLecture").forEach(btn=>{
+      btn.onclick=e=>{
+        const lecDiv=e.target.closest(".lecture");
+        const day=lecDiv.dataset.day;
+        const idx=lecDiv.dataset.idx;
+        timetable[day].splice(idx,1);
+        renderTimetable();
+      };
+    });
+
+    document.getElementById("saveBtn").onclick=saveTimetable;
+  }
+
+  // 🔹 Save timetable to DB
+  async function saveTimetable() {
+    if (!className) return alert("No class selected!");
+    try {
+      const res = await fetch("/save_timetable", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ class_name: className, timetable }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        status.textContent = `✅ Timetable saved for ${className}`;
+      } else {
+        status.textContent = "❌ Failed to save timetable.";
+      }
+    } catch (err) {
+      console.error("Error saving timetable:", err);
+      status.textContent = "Error saving timetable.";
+    }
+  }
+
+  // 🔹 Sidebar click event (replaces inline onclick)
+  const timetableTab = document.getElementById("timetable-tab");
+  if (timetableTab) {
+    timetableTab.addEventListener("click", (e) => {
+      e.preventDefault();
+      showSection('timetable-section');
+      openTimetable();
+    });
+  }
+});
+</script>
+  <div id="notes-section" class="content-section hidden">
+  <h2 class="text-2xl font-bold text-indigo-700 mb-4">📘 Syllabus Builder</h2>
+  <iframe src="{{ url_for('syllabus') }}"
+          title="Syllabus Builder"
+          style="width: 100%; height: 600px; border: none; border-radius: 0.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05);"></iframe>
+</div>
+<script>
+async function loadNotes() {
+  const res = await fetch("/api/notes/TYIT");
+  const data = await res.json();
+  const list = document.getElementById("notes-list");
+  list.innerHTML = data.map(n => `<a href="/notes/${n.file_path}" class="text-blue-600 underline" target="_blank">${n.file_path}</a>`).join("<br>");
+}
+
+async function loadSyllabus() {
+  const res = await fetch("/api/syllabus/TYIT");
+  const data = await res.json();
+  const list = document.getElementById("syllabus-list");
+  list.innerHTML = data.map(s => `<a href="/syllabus/${s.file_path}" class="text-blue-600 underline" target="_blank">${s.file_path}</a>`).join("<br>");
+}
+
+// Load automatically when section is visible
+document.addEventListener("DOMContentLoaded", () => {
+  loadNotes();
+  loadSyllabus();
+});
+async function fetchNotes() {
+    try {
+        const res = await fetch("/api/notes/TYIT");
+        const notes = await res.json();
+        
+    } catch (err) {
+        console.error("Error loading notes:", err);
+    }
+}
+
+async function fetchSyllabus() {
+    try {
+        const res = await fetch("/api/syllabus/TYIT");
+        const syllabus = await res.json();
+        
+    } catch (err) {
+        console.error("Error loading syllabus:", err);
+    }
+}
+</script>
+        <!-- Profile Section -->
+        <section id="profile-section" class="content-section">
+            <h2 class="text-xl font-semibold text-gray-700 mb-6">My Profile</h2>
+            <div
+                class="bg-white rounded-lg shadow-md p-6 flex flex-col md:flex-row items-center md:items-start space-y-4 md:space-y-0 md:space-x-6">
+                <div class="flex-grow text-center md:text-left">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">{{ faculty[1] }}</h3>
+                    <div class="grid-cols-3 sm:grid-cols-2 gap-x-6 gap-y-2 text-gray-600">
+                        <div><strong class="text-gray-800">Designation :</strong> {{ faculty[4] }}</div>
+                        <div><strong class="text-gray-800">Department :</strong> {{ faculty[3] }}</div>
+                        <div><strong class="text-gray-800">Email:</strong> {{ faculty[2] }}</div>
+                    </div>
+                    <!-- Add more profile details if needed -->
+                    
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const sidebarItems = document.querySelectorAll('.sidebar-item');
+            const contentSections = document.querySelectorAll('.content-section');
+            const classSelect = document.getElementById('class-select');
+            const studentListDiv = document.getElementById('student-list');
+            const submitAttendanceBtn = document.getElementById('submit-attendance-btn');
+            const downloadAttendancePdfBtn = document.getElementById('download-attendance-pdf-btn');
+            const noteFileInput = document.getElementById('note-file-input');
+            const selectedFileNameSpan = document.getElementById('selected-file-name');
+            const uploadNoteBtn = document.getElementById('upload-note-btn');
+            const generateAssignmentBtn = document.getElementById('generate-assignment-btn');
+            const newAssignmentBtn = document.getElementById('new-assignment-btn');
+            const createAssignmentForm = document.getElementById('create-assignment-form');
+            const cancelAssignmentBtn = document.getElementById('cancel-assignment-btn');
+            const createAssignmentSubmitBtn = document.getElementById('create-assignment-submit-btn');
+            const assignmentFileInput = document.getElementById('assignment-file-input');
+            const selectedAssignmentFileNameSpan = document.getElementById('selected-assignment-file-name');
+            const assignmentsTableBody = document.getElementById('assignments-table-body');
+            const assignmentSearch = document.getElementById('assignment-search');
+            const assignmentFilterStatus = document.getElementById('assignment-filter-status');
+            const sortableHeaders = document.querySelectorAll('.sortable-th');
+
+            // --- Hamburger Menu and Sidebar Logic ---
+            function toggleSidebar() {
+                sidebar.classList.toggle('-translate-x-full');
+                sidebarOverlay.classList.toggle('hidden');
+            }
+
+            hamburgerBtn.addEventListener('click', toggleSidebar);
+            sidebarOverlay.addEventListener('click', toggleSidebar);
+
+            // Close sidebar when a navigation item is clicked on mobile
+            sidebarItems.forEach(item => {
+                item.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    // Remove active state from all items
+                    sidebarItems.forEach(i => {
+                        i.classList.remove('active-sidebar-item');
+                        i.classList.add('text-gray-700', 'hover:bg-indigo-50', 'hover:text-indigo-700');
+                    });
+
+                    // Add active state to clicked item
+                    this.classList.add('active-sidebar-item');
+                    this.classList.remove('text-gray-700', 'hover:bg-indigo-50', 'hover:text-indigo-700');
+
+
+                    // Hide all content sections
+                    contentSections.forEach(section => {
+                        section.classList.add('hidden');
+                    });
+
+                    // Show the corresponding content section
+                    const targetSectionId = this.dataset.section + '-section';
+                    const targetSection = document.getElementById(targetSectionId);
+                    if (targetSection) {
+                        targetSection.classList.remove('hidden');
+                    }
+
+
+                    // Close sidebar on mobile after selection
+                    if (window.innerWidth < 1024) { // 1024px is Tailwind's 'lg' breakpoint
+                        toggleSidebar();
+                    }
+                });
+            });
+
+            // Trigger click on dashboard on page load to set initial state
+            document.querySelector('.sidebar-item[data-section="dashboard"]').click();
+
+
+        });
+    </script>
+  <!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div id="flash-container" class="fixed top-4 left-1/2 transform -translate-x-1/2 w-11/12 md:w-1/2 z-50">
+    {% for category, message in messages %}
+    <div class="p-3 mb-2 rounded-md text-white shadow-lg
+      {% if category == 'success' %} bg-green-500
+      {% elif category == 'danger' %} bg-red-500
+      {% elif category == 'warning' %} bg-yellow-500
+      {% else %} bg-blue-500 {% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<script>
+  // Remove flash messages after 3 seconds
+  setTimeout(() => {
+    const flashContainer = document.getElementById('flash-container');
+    if (flashContainer) {
+      flashContainer.remove();
+    }
+  }, 3000);
+</script>
+<script src="{{ url_for('static', filename='ai_module.js') }}"></script>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</body>
+
+</html>

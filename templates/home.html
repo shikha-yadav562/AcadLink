@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AcadLink | Smart Academic Manager</title>
+  <!-- Google Fonts: Poppins and Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- AOS CSS for scroll animations -->
+  <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta name="description" content="AcadLink - A smart academic manager to streamline attendance, assignments, and communication.">
+
+  <style>
+  
+
+    /* Define custom CSS variables for gradients and colors */
+    :root {
+      --color-primary-start: #6366F1; /* Indigo-500 */
+      --color-primary-end: #A855F7;   /* Purple-500 */
+      --color-text-dark: #1F2937;    /* Gray-800 */
+      --color-text-light: #4B5563;   /* Gray-600 */
+      --color-bg-light: #F9FAFB;     /* Light neutral background */
+      --color-bg-white: #FFFFFF;     /* Pure white background */
+    }
+
+    /* Base styles for light mode */
+    body {
+      background-color: var(--color-bg-light);
+      color: var(--color-text-dark);
+      font-family: 'Inter', sans-serif;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Dark mode overrides removed for light-only design */
+    /* If you wish to re-enable dark mode, uncomment these rules */
+    /*
+    .dark body {
+      background-color: #0F172A;
+      color: #E5E7EB;
+    }
+    .dark .text-gray-900 { color: #E5E7EB; }
+    .dark .text-gray-700 { color: #D1D5DB; }
+    .dark .text-gray-600 { color: #9CA3AF; }
+    */
+
+    /* Custom CSS for glowing button */
+    .glow-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease-in-out;
+      z-index: 1;
+      background: linear-gradient(to right, var(--color-primary-start), var(--color-primary-end)); /* Gradient background */
+    }
+
+    .glow-btn::before {
+      content: '';
+      position: absolute;
+      inset: -5px; /* Increase glow area */
+      border-radius: 0.5rem; /* Match button border-radius */
+      background: linear-gradient(to right, var(--color-primary-start), var(--color-primary-end));
+      z-index: -1;
+      filter: blur(15px); /* Stronger blur */
+      opacity: 0; /* Initially hidden */
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .glow-btn:hover::before {
+      opacity: 0.75; /* Show glow on hover */
+    }
+
+    .glow-btn:hover {
+      transform: translateY(-2px) scale(1.02); /* Slight lift and scale on hover */
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25); /* Enhanced shadow */
+    }
+
+    /* Feature card icon container gradient */
+    .icon-gradient-bg {
+      background: linear-gradient(to bottom right, var(--color-primary-start), var(--color-primary-end));
+    }
+
+    /* Navbar link hover underline effect */
+    .nav-link-underline::after {
+      content: '';
+      display: block;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(to right, var(--color-primary-start), var(--color-primary-end));
+      transition: width 0.3s ease-out;
+      margin-top: 2px; /* Small space below text */
+    }
+    .nav-link-underline:hover::after {
+      width: 100%;
+    }
+
+    /* Navbar blur on scroll */
+    .navbar-scrolled {
+      background-color: rgba(255, 255, 255, 0.9); /* More opaque for light mode */
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05); /* Lighter shadow */
+    }
+    /* Dark mode for navbar-scrolled removed */
+    /*
+    .dark .navbar-scrolled {
+      background-color: rgba(17, 24, 39, 0.8);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+    */
+
+    /* Light abstract shapes for background depth (instead of blobs) */
+    .abstract-shape-1 {
+      position: absolute;
+      top: 10%;
+      left: 5%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #E0E7FF 0%, #C7D2FE 100%); /* Light blueish gradient */
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+      opacity: 0.3;
+      filter: blur(50px);
+      animation: floatEffect 20s infinite ease-in-out alternate;
+      z-index: 0;
+    }
+    .abstract-shape-2 {
+      position: absolute;
+      bottom: 15%;
+      right: 10%;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, #FBCFE8 0%, #FDD6F0 100%); /* Light pinkish gradient */
+      border-radius: 40% 60% 70% 30% / 40% 70% 30% 60%;
+      opacity: 0.2;
+      filter: blur(60px);
+      animation: floatEffect 25s infinite ease-in-out alternate-reverse;
+      z-index: 0;
+    }
+
+    @keyframes floatEffect {
+      0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+      33% { transform: translate(20px, 30px) rotate(5deg) scale(1.05); }
+      66% { transform: translate(-10px, -20px) rotate(-5deg) scale(0.95); }
+    }
+
+    /* Footer subtle divider */
+    .footer-divider {
+      background: linear-gradient(to right, transparent, var(--color-primary-start), var(--color-primary-end), transparent);
+      height: 1px;
+      width: 100%;
+      margin: 0 auto;
+      opacity: 0.5;
+    }
+  </style>
+
+  <script>
+    // AOS initialization
+    document.addEventListener('DOMContentLoaded', () => {
+      AOS.init({
+        duration: 1000,
+        once: true,
+        mirror: false,
+      });
+
+      // Dark mode toggle (ensure light mode is default on load)
+      // Removed localStorage and media query check for strict light mode only
+      document.documentElement.classList.remove('dark');
+
+      // Navbar scroll effect
+      const navbar = document.querySelector('nav');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) { // Adjust scroll threshold as needed
+          navbar.classList.add('navbar-scrolled');
+        } else {
+          navbar.classList.remove('navbar-scrolled');
+        }
+      });
+    });
+
+    // Dark mode toggle function now effectively does nothing, for light-only design
+    function toggleDarkMode() {
+      console.log("Dark mode toggle is currently disabled for a light-only design.");
+      // If you wish to re-enable dark mode, you'd add the toggling logic here:
+      /*
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+      */
+    }
+  </script>
+</head>
+<body class="bg-gray-50 text-gray-900 transition-colors duration-500 font-sans">
+
+<!-- Navbar -->
+<nav class="bg-white shadow-sm fixed w-full z-30 transition-all duration-300 ease-in-out">
+  <div class="max-w-7xl mx-auto px-6 md:px-12">
+    <div class="flex justify-between items-center h-20">
+      <a href="#" class="flex items-center space-x-3 group">
+        <div class="w-12 h-12 rounded-full icon-gradient-bg flex items-center justify-center text-white text-3xl font-bold select-none transition-all duration-300 group-hover:rotate-6">🎓</div>
+        <div class="ml-2">
+          <h1 class="font-extrabold text-indigo-700 text-xl md:text-2xl transition-colors duration-300">AcadLink</h1>
+          <p class="text-xs text-gray-600 -mt-1 transition-colors duration-300">Smart Academic Manager</p>
+        </div>
+      </a>
+      <div class="hidden md:flex items-center space-x-8 text-gray-700 font-medium">
+        <a href="#features" class="nav-link-underline text-gray-700 hover:text-indigo-600 transition-colors duration-300">Features</a>
+        <a href="#about" class="nav-link-underline text-gray-700 hover:text-indigo-600 transition-colors duration-300">About</a>
+        <a href="{{ url_for('login') }}" class="py-3 px-7 rounded-full font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition glow-btn text-white">Login</a>
+        <a href="{{ url_for('signup') }}" class="py-3 px-7 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 transition font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">Get Started</a>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<section class="relative pt-20 pb-24 bg-gradient-to-br from-white to-gray-50 transition-colors duration-500 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between relative z-10">
+    <!-- Left Aligned Text Content -->
+    <div class="md:w-1/2 text-center md:text-left mb-12 md:mb-0" data-aos="fade-right">
+      <h2 class="text-5xl md:text-5xl font-extrabold text-gray-900 leading-tight mb-4">
+        Smart Digital<br><span class="text-indigo-600 leading-tight" >Academic Manager</span>
+      </h2>
+      <p class="mt-4 text-gray-700 max-w-xl text-lg md:text-xl leading-relaxed ">
+        Streamline your educational operations with AcadLink's comprehensive platform for students, faculty, and academic management.
+      </p>
+      <div class="mt-10 flex flex-col sm:flex-row justify-center md:justify-start space-y-4 sm:space-y-0 sm:space-x-4">
+        <a href="{{ url_for('login') }}"><button class="relative px-8 py-4 rounded-full font-bold shadow-xl transition glow-btn text-white transform hover:-translate-y-1">Start Your Journey</button></a>
+       
+        </a>
+      </div>
+    </div>
+
+    <!-- Right Side Premium Education Illustration - More detailed & thematic -->
+    <div class="md:w-1/2 flex justify-center items-center" data-aos="fade-left" data-aos-delay="200">
+     <img src="{{ url_for('static', filename='homebg.jpg') }}" alt="" height="">
+  </div>
+</div>
+  <div class="mt-20 max-w-7xl mx-auto px-6 md:px-12 text-center relative z-10">
+    <h2 class="text-4xl font-extrabold text-gray-900 mb-4" data-aos="fade-up">Our Impact in Numbers</h2>
+    <p class="text-center text-gray-700 mt-3 max-w-4xl mx-auto mb-16 text-xl" data-aos="fade-up" data-aos-delay="100">
+      See how AcadLink is transforming education for thousands of users worldwide.
+    </p>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-8">
+      <div class="bg-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300" data-aos="zoom-in" data-aos-delay="0">
+        <h3 class="font-extrabold text-2xl text-gray-900">1000+</h3>
+        <p class="text-sm text-gray-700">Active Students</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300" data-aos="zoom-in" data-aos-delay="100">
+        <h3 class="font-extrabold text-2xl text-gray-900">50+</h3>
+        <p class="text-sm text-gray-700">Faculty Members</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300" data-aos="zoom-in" data-aos-delay="200">
+        <h3 class="font-extrabold text-2xl text-gray-900">25+</h3>
+        <p class="text-sm text-gray-700">Departments</p>
+      </div>
+      <div class="bg-white p-6 rounded-xl shadow-lg transform hover:scale-105 transition-transform duration-300" data-aos="zoom-in" data-aos-delay="300">
+        <h3 class="font-extrabold text-2xl text-gray-900">99.9%</h3>
+        <p class="text-sm text-gray-700">Uptime</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="max-w-7xl mx-auto px-6 md:px-12 py-20 relative z-10">
+  <h2 class="text-4xl font-extrabold text-center text-gray-900 mb-4" data-aos="fade-up">Powerful Features for Modern Education</h2>
+  <p class="text-center text-gray-700 mt-3 max-w-4xl mx-auto mb-16 text-xl" data-aos="fade-up" data-aos-delay="100">
+    Everything you need to manage academic operations efficiently and effectively with a premium experience.
+  </p>
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+    <!-- Feature Cards -->
+    <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group" data-aos="fade-up">
+      <div class="w-16 h-16 rounded-full icon-gradient-bg flex items-center justify-center text-white text-3xl mb-6 shadow-md group-hover:scale-105 transition-transform duration-300">
+        <i class="fas fa-clipboard-check"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-3">Smart Attendance Tracking</h3>
+      <p class="text-gray-700 leading-relaxed">Real-time attendance monitoring with visual progress indicators and automated alerts for low attendance, ensuring academic commitment.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group" data-aos="fade-up" data-aos-delay="100">
+      <div class="w-16 h-16 rounded-full icon-gradient-bg flex items-center justify-center text-white text-3xl mb-6 shadow-md group-hover:scale-105 transition-transform duration-300">
+        <i class="fas fa-file-alt"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-3">Assignment Management</h3>
+      <p class="text-gray-700 leading-relaxed">Streamlined assignment uploads with robust PDF support, intuitive deadline tracking, and real-time submission status monitoring.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group" data-aos="fade-up" data-aos-delay="200">
+      <div class="w-16 h-16 rounded-full icon-gradient-bg flex items-center justify-center text-white text-3xl mb-6 shadow-md group-hover:scale-105 transition-transform duration-300">
+        <i class="fas fa-shield-alt"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-3">AI Plagiarism Detection</h3>
+      <p class="text-gray-700 leading-relaxed">Advanced AI-powered plagiarism detection tools to uphold the highest standards of academic integrity across all submissions.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group" data-aos="fade-up" data-aos-delay="300">
+      <div class="w-16 h-16 rounded-full icon-gradient-bg flex items-center justify-center text-white text-3xl mb-6 shadow-md group-hover:scale-105 transition-transform duration-300">
+        <i class="fas fa-comments"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-3">Integrated Communication</h3>
+      <p class="text-gray-700 leading-relaxed">A seamless, unified chat system connecting students, faculty, and class representatives for efficient, centralized communication.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group" data-aos="fade-up" data-aos-delay="400">
+      <div class="w-16 h-16 rounded-full icon-gradient-bg flex items-center justify-center text-white text-3xl mb-6 shadow-md group-hover:scale-105 transition-transform duration-300">
+        <i class="fas fa-user-shield"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-3">Role-Based Access</h3>
+      <p class="text-gray-700 leading-relaxed">Secure, customized dashboards for Students, Faculty, and Class Representatives, ensuring appropriate permissions and data access.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 group" data-aos="fade-up" data-aos-delay="500">
+      <div class="w-16 h-16 rounded-full icon-gradient-bg flex items-center justify-center text-white text-3xl mb-6 shadow-md group-hover:scale-105 transition-transform duration-300">
+        <i class="fas fa-book-open"></i>
+      </div>
+      <h3 class="text-xl font-semibold text-gray-900 mb-3">Academic Resources</h3>
+      <p class="text-gray-700 leading-relaxed">A centralized repository for syllabi, timetables, and a dynamic notice board, providing comprehensive access to academic information.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white text-center py-20 px-6 relative overflow-hidden">
+  <h2 class="text-4xl md:text-5xl font-extrabold max-w-4xl mx-auto leading-tight" data-aos="fade-up">Ready to Transform Your Academic Experience?</h2>
+  <p class="mt-6 max-w-3xl mx-auto text-xl opacity-90" data-aos="fade-up" data-aos-delay="100">
+    Join thousands of students and faculty already using AcadLink to streamline their academic journey and achieve more.
+  </p>
+  <button class="mt-12 px-10 py-5 bg-white text-gray-900 rounded-full font-bold shadow-2xl transition-all duration-500 glow-btn text-lg" data-aos="zoom-in" data-aos-delay="200">
+    Get Started Today
+  </button>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-100 text-gray-600 py-12 px-6">
+  <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0">
+    <div data-aos="fade-up" class="text-center md:text-left">
+      <h3 class="text-gray-900 font-extrabold text-2xl mb-2">AcadLink</h3>
+      <p class="text-gray-700">Smart Academic Manager</p>
+    </div>
+    <div data-aos="fade-up" data-aos-delay="100" class="flex flex-wrap justify-center md:justify-end gap-x-8 gap-y-4">
+      <a href="#features" class="hover:text-indigo-600 transition-colors duration-300 text-gray-700 hover:scale-105 transform">Features</a>
+      <a href="#" class="hover:text-indigo-600 transition-colors duration-300 text-gray-700 hover:scale-105 transform">Support</a>
+      <a href="#" class="hover:text-indigo-600 transition-colors duration-300 text-gray-700 hover:scale-105 transform">Privacy Policy</a>
+      <a href="#" class="hover:text-indigo-600 transition-colors duration-300 text-gray-700 hover:scale-105 transform">Terms of Service</a>
+    </div>
+  </div>
+  <p class="text-center mt-12 text-sm text-gray-500">&copy; 2025 AcadLink. All rights reserved.</p>
+</footer>
+
+<!-- AOS JS initialization (keep at the end of body for best performance) -->
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+</body>
+</html>
